@@ -3,6 +3,7 @@ import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
+  Image,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -13,6 +14,12 @@ import {
   useGenerateQuestSuggestions,
   useTodayQuest,
 } from "../../../../api/questApi";
+import { useCurrentMonthTier } from "../../../../api/tierApi";
+import {
+  getTierImage,
+  getTierNumber,
+  getTierStarImage,
+} from "../../../../utils/tierImages";
 import { useSession } from "../../../ctx";
 
 export default function HomeScreen() {
@@ -88,7 +95,7 @@ export default function HomeScreen() {
               end={{ x: 1, y: 1 }}
               style={styles.questButtonGradient}
             >
-              <Text style={styles.questButtonText}>✅ 오늘의 퀘스트 완료!</Text>
+              <Text style={styles.questButtonText}>오늘의 퀘스트 완료!</Text>
             </LinearGradient>
           </View>
         );
@@ -112,6 +119,7 @@ export default function HomeScreen() {
       }
     }
 
+    console.log(tierData?.experiencePoint);
     // 오늘의 퀘스트가 없는 경우
     return (
       <Pressable
@@ -134,9 +142,16 @@ export default function HomeScreen() {
     );
   };
 
+  // 티어 데이터 가져오기
+
+  const { data: tierData } = useCurrentMonthTier();
+
+  const tier = tierData?.tier || "TinyStar";
+
   return (
     <SafeAreaView style={styles.container}>
       {/* <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" /> */}
+      <Text style={styles.title}>오늘의 행성 퀘스트</Text>
       {/* 진행률 바 */}
       <View style={styles.progressContainer}>
         <View style={styles.progressBarBackground}>
@@ -150,73 +165,20 @@ export default function HomeScreen() {
 
         {/* 행성 캐릭터 */}
         <View style={styles.planetContainer}>
-          <LinearGradient
-            colors={["#9B9FEE", "#ECEDFE"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.planet}
-          >
-            <View style={styles.planetInner}>
-              <Text style={styles.planetEmoji}>🪐</Text>
-            </View>
-          </LinearGradient>
+          <Image source={getTierStarImage(getTierNumber(tier))} />
         </View>
 
         {/* 별 아이콘 */}
         <View style={styles.starContainer}>
-          <LinearGradient
-            colors={["#ECEDFE", "#9B9FEE"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.star}
-          >
-            <Text style={styles.starText}>⭐</Text>
-          </LinearGradient>
+          <Image source={require("@/assets/images/tier/Star.png")} />
+          <Text style={styles.experiencePoint}>
+            {tierData?.experiencePoint}
+          </Text>
         </View>
       </View>
 
       {/* 메인 행성 일러스트 영역 */}
-      <View style={styles.mainPlanetContainer}>
-        <LinearGradient
-          colors={["#ECEDFE", "#FFFFFF"]}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          style={styles.planetBackground}
-        >
-          {/* 메인 행성 */}
-          <View style={styles.mainPlanet}>
-            <LinearGradient
-              colors={["#9B9FEE", "#ECEDFE"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.mainPlanetGradient}
-            >
-              <Text style={styles.mainPlanetEmoji}>🌍</Text>
-            </LinearGradient>
-          </View>
-
-          {/* 작은 별들 */}
-          <View style={styles.smallStar1}>
-            <Text style={styles.smallStarText}>✨</Text>
-          </View>
-          <View style={styles.smallStar2}>
-            <Text style={styles.smallStarText}>⭐</Text>
-          </View>
-
-          {/* 행성 고리 */}
-          <LinearGradient
-            colors={["#9B9FEE", "#ECEDFE"]}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
-            style={styles.planetRing}
-          />
-        </LinearGradient>
-      </View>
-
-      {/* 행성별 텍스트 */}
-      <View style={styles.planetByContainer}>
-        <Text style={styles.planetByText}>행성별</Text>
-      </View>
+      <Image source={getTierImage(getTierNumber(tier))} />
 
       {/* 퀘스트 버튼 */}
       {renderQuestButton()}
@@ -228,6 +190,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
+  },
+  title: {
+    fontSize: 20,
+    fontFamily: "PretendardBold",
+    fontWeight: "700",
+    width: "100%",
+    textAlign: "center",
+    color: "#3A3A3A",
+    marginTop: 60,
   },
   questTitleContainer: {
     marginTop: 24,
@@ -268,7 +239,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
     position: "relative",
     justifyContent: "center",
-    marginBottom: 35,
   },
   progressBarBackground: {
     height: 16,
@@ -405,8 +375,10 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   questButtonGradient: {
+    marginTop: 40,
     paddingVertical: 16,
     paddingHorizontal: 32,
+    borderRadius: 40,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -415,5 +387,14 @@ const styles = StyleSheet.create({
     fontFamily: "PretendardBold",
     fontWeight: "700",
     color: "#FFFFFF",
+  },
+  experiencePoint: {
+    position: "absolute",
+    top: -8,
+    left: -20,
+    fontSize: 16,
+    fontFamily: "PretendardBold",
+    fontWeight: "700",
+    color: "#3A3A3A",
   },
 });
