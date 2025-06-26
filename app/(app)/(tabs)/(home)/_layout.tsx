@@ -9,13 +9,29 @@ export default function IndexLayout() {
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen
-        name="fixInfo"
+        name="questSelection"
         options={{
           headerShown: false,
           headerTransparent: true,
           headerBackVisible: false,
           headerTitle: "",
           gestureEnabled: true,
+        }}
+      />
+      <Stack.Screen
+        name="questProgress"
+        options={{
+          headerShown: false,
+          headerTransparent: true,
+          headerBackVisible: false,
+          headerTitle: "",
+          gestureEnabled: true,
+        }}
+      />
+      <Stack.Screen
+        name="generateQuest"
+        options={{
+          headerShown: false,
         }}
       />
     </Stack>

@@ -21,7 +21,8 @@ export default function TabLayout() {
 
   // fixInfo 페이지인지 확인
   const isFixInfoPage = pathname.includes("fixInfo");
-  const isHomePage = pathname.includes("home");
+  const isHomePage =
+    pathname.includes("questSelection") || pathname.includes("questProgress");
 
   return (
     <Tabs

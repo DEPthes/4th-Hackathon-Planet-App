@@ -28,8 +28,8 @@ export default function HomeScreen() {
   }
 
   const handleQuestGeneration = () => {
-    // 퀘스트 생성 페이지로 이동
-    console.log("퀘스트 생성하기");
+    // 퀘스트 선택 페이지로 이동
+    router.push("/(app)/(tabs)/(home)/questSelection");
   };
 
   return (
