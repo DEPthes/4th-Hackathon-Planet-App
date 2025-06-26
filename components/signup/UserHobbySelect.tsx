@@ -1,3 +1,4 @@
+import { MAIN_COLOR2, SUB_COLOR } from "@/constants/Colors";
 import { FONT_STYLE } from "@/constants/Fonts";
 import React, { useState } from "react";
 import {
@@ -106,6 +107,7 @@ const UserHobbySelect = ({ value, onChange }: UserHobbySelectProps) => {
           );
         })}
       </View>
+      <Text style={styles.label}>기타</Text>
     </View>
   );
 };
@@ -127,8 +129,9 @@ const styles = StyleSheet.create({
   hobbyContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     width: "100%",
+    marginBottom: 36,
   },
   button: {
     paddingHorizontal: 16,
@@ -140,19 +143,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   selected: {
-    backgroundColor: "#9b9fee",
-    borderColor: "#9b9fee",
+    backgroundColor: MAIN_COLOR2,
+    borderColor: SUB_COLOR,
   },
   unselected: {
     backgroundColor: "#fff",
     borderColor: "#929498",
   },
   text: {
-    fontSize: 14,
-    fontWeight: "400",
+    ...FONT_STYLE.buttonM,
   },
   selectedText: {
-    color: "#fff",
+    color: SUB_COLOR,
   },
   unselectedText: {
     color: "#929498",

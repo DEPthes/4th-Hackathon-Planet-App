@@ -1,3 +1,4 @@
+import { MAIN_COLOR2, SUB_COLOR } from "@/constants/Colors";
 import { FONT_STYLE } from "@/constants/Fonts";
 import React from "react";
 import {
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   selected: {
-    backgroundColor: "#9b9fee",
+    backgroundColor: MAIN_COLOR2,
     borderColor: "#9b9fee",
   },
   unselected: {
@@ -105,7 +106,7 @@ const styles = StyleSheet.create({
     ...(FONT_STYLE.buttonM as TextStyle),
   },
   selectedText: {
-    color: "#fff",
+    color: SUB_COLOR,
   },
   unselectedText: {
     color: "#929498",

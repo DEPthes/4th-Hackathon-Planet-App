@@ -1,30 +1,29 @@
 import { MAIN_COLOR2, SUB_COLOR } from "@/constants/Colors";
-import React from "react";
+import { FONT_STYLE } from "@/constants/Fonts";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const GENDER_OPTIONS = [
-  { label: "남자", value: "male" },
-  { label: "여자", value: "female" },
-];
+export type AgeValue = "10대" | "20대" | "30대" | "40대 이상" | null;
 
-type UserGenderSelectProps = {
-  value: "male" | "female" | null;
-  onChange: (value: "male" | "female") => void;
+const AGE_OPTIONS: AgeValue[] = ["10대", "20대", "30대", "40대 이상"];
+
+type UserAgeSelectProps = {
+  value: AgeValue;
+  onChange: (value: AgeValue) => void;
 };
 
-const UserGenderSelect = ({ value, onChange }: UserGenderSelectProps) => {
+const UserAgeSelect = ({ value, onChange }: UserAgeSelectProps) => {
   return (
     <View style={styles.container}>
-      {GENDER_OPTIONS.map((option) => {
-        const selected = value === option.value;
+      {AGE_OPTIONS.map((option) => {
+        const selected = value === option;
         return (
           <TouchableOpacity
-            key={option.value}
+            key={option}
             style={[
               styles.button,
               selected ? styles.selected : styles.unselected,
             ]}
-            onPress={() => onChange(option.value as "male" | "female")}
+            onPress={() => onChange(option)}
             activeOpacity={0.8}
           >
             <Text
@@ -33,7 +32,7 @@ const UserGenderSelect = ({ value, onChange }: UserGenderSelectProps) => {
                 selected ? styles.selectedText : styles.unselectedText,
               ]}
             >
-              {option.label}
+              {option}
             </Text>
           </TouchableOpacity>
         );
@@ -44,16 +43,16 @@ const UserGenderSelect = ({ value, onChange }: UserGenderSelectProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "column",
-    gap: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
     width: "100%",
-    marginTop: 24,
+    marginVertical: 8,
   },
   button: {
     flex: 1,
-    height: 60,
+    height: 44,
     borderRadius: 100,
-    marginHorizontal: 8,
+    marginHorizontal: 6,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -67,8 +66,7 @@ const styles = StyleSheet.create({
     borderColor: "#929498",
   },
   text: {
-    fontSize: 16,
-    fontWeight: "600",
+    ...FONT_STYLE.buttonM,
   },
   selectedText: {
     color: SUB_COLOR,
@@ -78,4 +76,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserGenderSelect;
+export default UserAgeSelect;

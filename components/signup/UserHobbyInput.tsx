@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, StyleSheet, TextInput, View } from "react-native";
+import { StyleSheet, TextInput, View } from "react-native";
 
 type UserHobbyInputProps = {
   onAdd: (hobby: string) => void;
@@ -21,7 +21,6 @@ const UserHobbyInput = ({ onAdd }: UserHobbyInputProps) => {
         onChangeText={setInput}
         placeholder="직접 입력"
       />
-      <Button title="추가" onPress={handleAdd} />
     </View>
   );
 };
@@ -33,11 +32,10 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   input: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "#cbced3",
-    borderRadius: 8,
     padding: 10,
+    borderBottomWidth: 1,
+    borderColor: "#E4E4E4",
+    width: 100,
     marginRight: 8,
     fontSize: 14,
     color: "#3A3A3A",
