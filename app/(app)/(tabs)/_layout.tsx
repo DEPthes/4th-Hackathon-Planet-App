@@ -1,11 +1,12 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Tabs } from "expo-router";
+import { Tabs } from "expo-router";
 import React from "react";
-import { Pressable } from "react-native";
 
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
+import { FONT_STYLE } from "@/constants/Fonts";
+import { Image } from "react-native";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -20,39 +21,78 @@ export default function TabLayout() {
 
   return (
     <Tabs
+      initialRouteName="index"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].sub,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
+        headerShadowVisible: false,
+        headerTransparent: true,
+        tabBarStyle: {
+          backgroundColor: "#fff",
+          borderTopWidth: 1,
+          borderRadius: 10,
+          borderTopColor: "#E4E4E4",
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 0 },
+          shadowOpacity: 0.25,
+          shadowRadius: 1.84,
+          elevation: 1,
+          ...FONT_STYLE.headlineS,
+        },
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="report"
         options={{
-          title: "Tab One",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? "light"].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
+          title: "기록",
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={
+                focused
+                  ? require("@/assets/images/icon/activeNote.png")
+                  : require("@/assets/images/icon/note.png")
+              }
+              style={{ width: 24, height: 24 }}
+              resizeMode="contain"
+            />
           ),
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="index"
         options={{
-          title: "Tab Two",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: "HOME",
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={
+                focused
+                  ? require("@/assets/images/icon/activeHome.png")
+                  : require("@/assets/images/icon/home.png")
+              }
+              style={{ width: 24, height: 24 }}
+              resizeMode="contain"
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="myInfo"
+        options={{
+          title: "내정보",
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={
+                focused
+                  ? require("@/assets/images/icon/activeProfile.png")
+                  : require("@/assets/images/icon/profile.png")
+              }
+              style={{ width: 24, height: 24 }}
+              resizeMode="contain"
+            />
+          ),
         }}
       />
     </Tabs>

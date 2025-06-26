@@ -1,3 +1,5 @@
+import { router } from "expo-router";
+import { useEffect } from "react";
 import { StyleSheet } from "react-native";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
@@ -6,7 +8,20 @@ import { MAIN_COLOR } from "@/constants/Colors";
 import { useSession } from "../../ctx";
 
 export default function TabOneScreen() {
-  const { signOut } = useSession();
+  const { signOut, session } = useSession();
+
+  useEffect(() => {
+    // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
+    if (!session) {
+      router.replace("/login");
+    }
+  }, [session]);
+
+  // 세션이 없으면 빈 화면 표시 (리다이렉트 중)
+  if (!session) {
+    return null;
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tab One</Text>
