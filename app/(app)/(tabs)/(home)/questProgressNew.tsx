@@ -58,6 +58,10 @@ export default function QuestProgressNewScreen() {
     }
 
     try {
+      if (!selectedImage) {
+        Alert.alert("이미지를 선택해주세요.");
+        return;
+      }
       const result = await completeMutation.mutateAsync({
         questId: todayQuest.id,
         evidenceImage: selectedImage || undefined,
@@ -158,7 +162,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 40, // 24px 기본 + 16px 추가
-    paddingTop: 27, // 헤더와의 간격
+    paddingTop: 2, // 헤더와의 간격
   },
   questInfoContainer: {
     marginBottom: 27,
@@ -219,7 +223,7 @@ const styles = StyleSheet.create({
   fileNameContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingLeft: 40, // 왼쪽 정렬
+    paddingLeft: 0, // 왼쪽 정렬
     gap: 6,
   },
   fileName: {
