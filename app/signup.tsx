@@ -290,9 +290,12 @@ const Signup = () => {
 
         {/* 회원가입 버튼 */}
         <Pressable
-          style={[styles.button, isLoading && styles.disabledButton]}
+          style={[
+            styles.button,
+            isLoading || isEmpty ? styles.disabledButton : {},
+          ]}
           onPress={handleSignup}
-          disabled={isLoading}
+          disabled={isEmpty || isLoading}
         >
           <Text style={styles.buttonText}>저장</Text>
         </Pressable>
@@ -347,7 +350,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   disabledButton: {
-    backgroundColor: "#ccc",
+    backgroundColor: "#E4E4E4",
   },
   buttonText: {
     ...FONT_STYLE.buttonL,
