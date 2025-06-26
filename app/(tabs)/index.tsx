@@ -2,6 +2,7 @@ import { StyleSheet } from "react-native";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
+import { MAIN_COLOR } from "@/constants/Colors";
 
 export default function TabOneScreen() {
   return (
@@ -22,6 +23,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: MAIN_COLOR,
+    fontFamily: "Pretendard",
   },
   title: {
     fontSize: 20,
