@@ -245,3 +245,36 @@ export async function getCachedQuestSuggestions(
     },
   });
 }
+
+interface QuestSuggestionByDateResponse {
+  id: number;
+  title: string;
+  encouragement: string;
+  isCompleted: boolean;
+  completedAt: string;
+  createdAt: string;
+  lastModifiedAt: string;
+  evidenceImage?: {
+    id: string;
+    fileName: string;
+    size: number;
+  };
+  feedback?: string;
+}
+
+// 기간별 퀘스트 조회
+export async function getQuestSuggestionsByDate(
+  token: string,
+  startDate: string,
+  endDate: string
+): Promise<QuestSuggestionByDateResponse[]> {
+  return apiRequest<QuestSuggestionByDateResponse[]>(
+    `/quest/my?startDate=${startDate}&endDate=${endDate}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+}
