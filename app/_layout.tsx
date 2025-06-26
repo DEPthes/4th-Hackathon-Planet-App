@@ -80,7 +80,6 @@ function RootNavigator() {
             }}
           />
         </Stack.Protected>
-        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
       </Stack>
     </ThemeProvider>
   );

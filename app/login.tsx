@@ -47,7 +47,7 @@ export default function Login() {
 
       signIn(response.accessToken);
 
-      router.replace("/(app)/(tabs)");
+      router.replace("/(app)/(tabs)/(home)");
     } catch (error: any) {
       if (error.status === 400) {
         setError("login");

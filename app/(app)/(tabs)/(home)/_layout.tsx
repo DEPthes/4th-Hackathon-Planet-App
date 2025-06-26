@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-export default function MyInfoLayout() {
+export default function IndexLayout() {
   return (
     <Stack
       screenOptions={{

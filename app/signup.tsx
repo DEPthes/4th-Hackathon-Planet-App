@@ -142,7 +142,7 @@ const Signup = () => {
 
       // 7. 세션 설정 및 메인 화면으로 이동
       sessionSignIn(loginResponse.accessToken);
-      router.replace("/(app)/(tabs)");
+      router.replace("/(app)/(tabs)/(home)");
     } catch (error: any) {
       // 회원가입 또는 로그인 실패 - 에러 메시지 표시
       console.error("회원가입/로그인 오류:", error);

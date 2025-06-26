@@ -21,15 +21,17 @@ export default function TabLayout() {
 
   // fixInfo 페이지인지 확인
   const isFixInfoPage = pathname.includes("fixInfo");
+  const isHomePage = pathname.includes("home");
 
   return (
     <Tabs
-      initialRouteName="index"
+      initialRouteName="(home)"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].sub,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true) && !isFixInfoPage,
+        headerShown:
+          useClientOnlyValue(false, true) && !isFixInfoPage && !isHomePage,
         headerShadowVisible: false,
         headerTransparent: true,
         headerTitleStyle: {
@@ -71,7 +73,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="index"
+        name="(home)"
         options={{
           title: "HOME",
           tabBarIcon: ({ focused }) => (
