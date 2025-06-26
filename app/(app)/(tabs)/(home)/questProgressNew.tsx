@@ -90,11 +90,11 @@ export default function QuestProgressNewScreen() {
           <View style={styles.questInfoBox}>
             <Text style={styles.questInfoTitle}>오늘의 행성 퀘스트</Text>
             <Text style={styles.questInfoDescription}>
-              : 책 읽고, 마음에 드는 문장 고르기✍️
+              : {todayQuest?.title}
             </Text>
           </View>
           <Text style={styles.encouragementText}>
-            괜찮은 문장이 있었나요? 천천히, 조용히 찾아보세요.
+            {todayQuest?.encouragement}
           </Text>
         </View>
 
