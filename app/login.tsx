@@ -2,7 +2,7 @@ import { signIn as apiSignIn } from "@/api/api";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-  Alert,
+  Image,
   Pressable,
   StyleSheet,
   Text,
@@ -17,18 +17,17 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<"email" | "password" | "login" | "">("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     try {
       // 입력값 검증
       if (!email.trim()) {
         setError("email");
-        Alert.alert("입력 오류", "이메일을 입력해주세요.");
         return;
       }
       if (!password.trim()) {
         setError("password");
-        Alert.alert("입력 오류", "비밀번호를 입력해주세요.");
         return;
       }
 
@@ -46,25 +45,25 @@ export default function Login() {
 
       router.replace("/(app)/(tabs)");
     } catch (error: any) {
-      console.error("로그인 오류:", error);
-      Alert.alert(
-        "로그인 실패",
-        error.message || "로그인 중 오류가 발생했습니다."
-      );
-
-      if (error.status === 401) {
+      if (error.status === 400) {
         setError("login");
-        Alert.alert("로그인 실패", "이메일 또는 비밀번호가 올바르지 않습니다.");
-      } else if (error.status === 404) {
-        setError("login");
-        Alert.alert("로그인 실패", "이메일이 존재하지 않습니다.");
-      } else {
-        setError("login");
-        Alert.alert(
-          "로그인 실패",
-          error.message || "로그인 중 오류가 발생했습니다."
-        );
+        return;
       }
+      // console.error("로그인 오류:", error);
+
+      // if (error.status === 401) {
+      //   setError("login");
+      //   Alert.alert("로그인 실패", "이메일 또는 비밀번호가 올바르지 않습니다.");
+      // } else if (error.status === 404) {
+      //   setError("login");
+      //   Alert.alert("로그인 실패", "이메일이 존재하지 않습니다.");
+      // } else {
+      //   setError("login");
+      //   Alert.alert(
+      //     "로그인 실패",
+      //     error.message || "로그인 중 오류가 발생했습니다."
+      //   );
+      // }
     } finally {
       setIsLoading(false);
     }
@@ -72,43 +71,78 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={[styles.input, error === "email" && styles.inputError]}
-          placeholder="이메일"
-          value={email}
-          onChangeText={(text) => {
-            setEmail(text);
-            setError("");
-          }}
-          autoCapitalize="none"
-          keyboardType="email-address"
-        />
-        {error === "email" && (
-          <Text style={styles.errorText}>이메일을 입력해주세요</Text>
-        )}
-
-        <TextInput
-          style={[styles.input, error === "password" && styles.inputError]}
-          placeholder="비밀번호"
-          value={password}
-          onChangeText={(text) => {
-            setPassword(text);
-            setError("");
-          }}
-          secureTextEntry
-          autoCapitalize="none"
-        />
-        {error === "password" && (
-          <Text style={styles.errorText}>비밀번호를 입력해주세요</Text>
-        )}
-        {error === "login" && (
-          <Text style={styles.errorText}>
-            이메일 또는 비밀번호가 올바르지 않습니다
-          </Text>
-        )}
+      {/* 타이틀 섹션 */}
+      <View style={styles.titleContainer}>
+        <Image source={require("@/assets/images/icon.png")} />
       </View>
 
+      {/* 입력 필드 섹션 */}
+      <View style={styles.inputContainer}>
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={[styles.input, error === "email" && styles.inputError]}
+            placeholder="이메일을 입력하세요."
+            placeholderTextColor="#3A3A3A"
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text);
+              setError("");
+            }}
+            autoCapitalize="none"
+            keyboardType="email-address"
+          />
+          {error === "email" && (
+            <Text style={styles.errorText}>*이메일을 입력하세요</Text>
+          )}
+        </View>
+
+        <View style={styles.inputWrapper}>
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={[
+                styles.input,
+                styles.passwordInput,
+                error === "password" && styles.inputError,
+              ]}
+              placeholder="비밀번호를 입력하세요."
+              placeholderTextColor="#3A3A3A"
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+                setError("");
+              }}
+              secureTextEntry={!showPassword}
+              autoCapitalize="none"
+            />
+            <Pressable
+              style={styles.eyeButton}
+              onPress={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <Image
+                  source={require("@/assets/images/icon/lucide_eye-closed.png")}
+                />
+              ) : (
+                <Image
+                  source={require("@/assets/images/icon/lucide_eye.png")}
+                />
+              )}
+            </Pressable>
+          </View>
+          {error === "password" && (
+            <Text style={styles.errorText}>*비밀번호를 입력하세요</Text>
+          )}
+        </View>
+      </View>
+
+      {/* 로그인 에러 메시지 */}
+      {error === "login" && (
+        <Text style={styles.loginErrorText}>
+          이메일 또는 패스워드가 일치하지 않습니다
+        </Text>
+      )}
+
+      {/* 버튼 섹션 */}
       <View style={styles.buttonContainer}>
         <Pressable
           style={[styles.loginButton, isLoading && styles.disabledButton]}
@@ -139,61 +173,144 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
-    padding: 20,
+    padding: 32,
+  },
+  titleContainer: {
+    alignItems: "center",
+    marginBottom: 60,
+  },
+  planetIconContainer: {
+    position: "relative",
+    marginBottom: 16,
+  },
+  planetGradient: {
+    width: 71,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#FFFFFF",
+  },
+  planetCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#FFFFFF",
+  },
+  starContainer: {
+    position: "absolute",
+    right: -20,
+    top: -8,
+  },
+  star: {
+    backgroundColor: "#FFFFFF",
+    position: "absolute",
+  },
+  largeStar: {
+    width: 38.5,
+    height: 38.5,
+    borderRadius: 1.4,
+    right: 0,
+    top: 0,
+  },
+  smallStar: {
+    width: 14.5,
+    height: 14.5,
+    borderRadius: 0.7,
+    right: -7,
+    top: 23,
+  },
+  titleWrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  title: {
+    fontSize: 64,
+    fontWeight: "400",
+    textAlign: "center",
+    color: "#9B9FEE",
   },
   inputContainer: {
     width: "100%",
-    maxWidth: 400,
-    marginBottom: 30,
+    maxWidth: 326,
+    marginBottom: 16,
+  },
+  inputWrapper: {
+    marginBottom: 16,
   },
   input: {
     width: "100%",
-    height: 50,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    marginBottom: 10,
-    fontSize: 16,
+    height: 41,
+    backgroundColor: "#ECEDFE",
+    borderRadius: 4,
+    paddingHorizontal: 16,
+    fontSize: 14,
+    fontFamily: "Pretendard",
+    color: "#3A3A3A",
   },
-  inputError: {
-    borderColor: "#ff3b30",
+  inputError: {},
+  passwordContainer: {
+    position: "relative",
+  },
+  passwordInput: {
+    paddingRight: 48,
+  },
+  eyeButton: {
+    position: "absolute",
+    right: 16,
+    top: 12,
+    width: 16,
+    height: 16,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  eyeIcon: {
+    fontSize: 12,
   },
   errorText: {
-    color: "#ff3b30",
-    marginBottom: 10,
-    fontSize: 14,
+    color: "#929498",
+    fontSize: 12,
+    fontFamily: "Pretendard",
+    marginTop: 8,
+  },
+  loginErrorText: {
+    color: "#929498",
+    fontSize: 12,
+    fontFamily: "Pretendard",
+    marginBottom: 16,
+    textAlign: "center",
   },
   buttonContainer: {
     width: "100%",
-    maxWidth: 400,
-    gap: 10,
+    maxWidth: 326,
+    gap: 16,
   },
   loginButton: {
-    backgroundColor: "#9C9FEE",
-    padding: 15,
+    backgroundColor: "#9B9FEE",
+    height: 59,
     borderRadius: 8,
+    justifyContent: "center",
     alignItems: "center",
   },
   disabledButton: {
     backgroundColor: "#ccc",
   },
   loginButtonText: {
-    color: "white",
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "600",
+    fontFamily: "Pretendard",
+    fontWeight: "700",
   },
   signupButton: {
-    backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 8,
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#9C9FEE",
+    paddingVertical: 8,
   },
   signupButtonText: {
-    color: "#9C9FEE",
-    fontSize: 16,
-    fontWeight: "600",
+    color: "#929498",
+    fontSize: 14,
+    fontFamily: "Pretendard",
+    fontWeight: "700",
   },
 });

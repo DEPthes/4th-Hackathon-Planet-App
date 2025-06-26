@@ -105,7 +105,7 @@ async function apiRequest<T>(
     if (!response.ok) {
       console.log("❌ API 에러 - 응답 텍스트 읽는 중...");
       const errorText = await response.text();
-      console.error("💥 API 에러 응답:", errorText);
+      // console.error("💥 API 에러 응답:", errorText);
       throw new ApiError(response.status, errorText || response.statusText);
     }
 
@@ -122,7 +122,7 @@ async function apiRequest<T>(
       stack: error instanceof Error ? error.stack : undefined,
     };
 
-    console.error("💥 API 요청 실패:", errorInfo);
+    // console.error("💥 API 요청 실패:", errorInfo);
 
     // 타임아웃 에러
     if (error instanceof Error && error.name === "AbortError") {
