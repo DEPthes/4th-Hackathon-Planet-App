@@ -57,23 +57,18 @@ export default function QuestProgressNewScreen() {
     }
 
     try {
-      await completeMutation.mutateAsync({
+      const result = await completeMutation.mutateAsync({
         questId: todayQuest.id,
         evidenceImage: selectedImage || undefined,
       });
 
-      Alert.alert(
-        "퀘스트 완료!",
-        "퀘스트가 성공적으로 완료되었습니다! 홈으로 돌아갑니다.",
-        [
-          {
-            text: "확인",
-            onPress: () => {
-              router.push("/(app)/(tabs)/(home)");
-            },
-          },
-        ]
-      );
+      router.push({
+        pathname: "/(app)/(tabs)/(home)/questComplete",
+        params: {
+          questData: JSON.stringify(result),
+          expGained: "20", // 또는 result에서 경험치 정보를 가져올 수 있다면
+        },
+      });
     } catch (error) {
       Alert.alert("오류", "퀘스트 완료에 실패했습니다. 다시 시도해주세요.");
       console.error("퀘스트 완료 오류:", error);
