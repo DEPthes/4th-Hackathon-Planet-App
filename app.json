@@ -14,7 +14,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.si14444.planet"
     },
     "android": {
       "adaptiveIcon": {
@@ -33,9 +34,20 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/PretendardVariable.ttf"]
+          "fonts": [
+            "./assets/fonts/PretendardVariable.ttf"
+          ]
         }
-      ]
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#232323",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 390
+        }
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
