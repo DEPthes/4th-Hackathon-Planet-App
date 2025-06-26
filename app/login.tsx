@@ -44,12 +44,7 @@ export default function Login() {
       // 토큰과 사용자 정보 저장
       signIn(response.accessToken);
 
-      Alert.alert("로그인 성공", `${response.user.name}님, 환영합니다!`, [
-        {
-          text: "확인",
-          onPress: () => router.replace("/(app)/(tabs)"),
-        },
-      ]);
+      router.replace("/(app)/(tabs)");
     } catch (error: any) {
       console.error("로그인 오류:", error);
       Alert.alert(

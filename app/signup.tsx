@@ -185,7 +185,7 @@ const Signup = () => {
           <Text style={styles.infoLabel}>비밀번호</Text>
           <View style={styles.passwordRow}>
             <TextInput
-              style={[styles.inputFull, { flex: 1 }]}
+              style={styles.inputFull}
               value={password}
               onChangeText={setPassword}
               placeholder="비밀번호를 입력하세요"
@@ -220,7 +220,7 @@ const Signup = () => {
           <Text style={styles.infoLabel}>비밀번호 확인</Text>
           <View style={styles.passwordRow}>
             <TextInput
-              style={[styles.inputFull, { flex: 1 }]}
+              style={styles.inputFull}
               value={passwordCheck}
               onChangeText={setPasswordCheck}
               placeholder="비밀번호를 다시 입력하세요"
