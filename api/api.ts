@@ -1,3 +1,5 @@
+import { QuestSuggestionResponse } from "./questApi";
+
 // Planet API 클라이언트
 const API_BASE_URL =
   process.env.EXPO_PUBLIC_API_BASE_URL || "http://planet.myunghyun.me";
@@ -108,6 +110,7 @@ async function apiRequest<T>(
 
   try {
     console.log("📡 fetch 요청 시작...");
+    console.log("url", options);
 
     const response = await fetch(url, {
       ...options,
@@ -216,5 +219,29 @@ export async function updateUser(
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
+  });
+}
+
+// 퀘스트 제안 생성
+export async function generateQuestSuggestions(
+  token: string
+): Promise<QuestSuggestionResponse[]> {
+  return apiRequest<QuestSuggestionResponse[]>(`/quest/suggestions/generate`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+// 캐시된 퀘스트 제안 조회
+export async function getCachedQuestSuggestions(
+  token: string
+): Promise<QuestSuggestionResponse[]> {
+  return apiRequest<QuestSuggestionResponse[]>(`/quest/suggestions`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 }

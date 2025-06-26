@@ -1,3 +1,8 @@
+import { getCachedQuestSuggestions } from "@/api/api";
+import { approveQuestSuggestion } from "@/api/questApi";
+import { QUERY_KEYS } from "@/lib/queryClient";
+import { getToken } from "@/lib/storage";
+import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -11,44 +16,36 @@ import {
 } from "react-native";
 
 interface QuestOption {
-  id: number;
-  text: string;
-  emoji: string;
+  uuid: string;
+  title: string;
 }
 
-const questOptions: QuestOption[] = [
-  {
-    id: 1,
-    text: "10분간 햇빛을 쬐며 걷고, 하늘 사진 찍기",
-    emoji: "📸",
-  },
-  {
-    id: 2,
-    text: "책 읽고, 마음에 드는 문장 고르기",
-    emoji: "✍️",
-  },
-  {
-    id: 3,
-    text: "오늘은 산으로~! 등산 가기",
-    emoji: "⛰️",
-  },
-  {
-    id: 4,
-    text: "내 공간을 깨끗이! 방 청소하기",
-    emoji: "🧹",
-  },
-];
-
 export default function QuestSelection() {
-  const [selectedQuestId, setSelectedQuestId] = useState<number | null>(2); // 기본값으로 2번 선택
+  const [selectedQuestId, setSelectedQuestId] = useState<string | null>(null); // 기본값으로 2번 선택
 
-  const handleQuestSelect = (questId: number) => {
+  const { data } = useQuery({
+    queryKey: QUERY_KEYS.QUEST_SUGGESTIONS,
+    queryFn: async () => {
+      const token = await getToken();
+      if (!token) {
+        return;
+      }
+      return getCachedQuestSuggestions(token);
+    },
+  });
+
+  const handleQuestSelect = (questId: string) => {
     setSelectedQuestId(questId);
   };
 
-  const handleCompleteSelection = () => {
+  const handleCompleteSelection = async () => {
     if (selectedQuestId) {
       // 퀘스트 진행 화면으로 이동
+      const token = await getToken();
+      if (!token) {
+        return;
+      }
+      await approveQuestSuggestion(selectedQuestId);
       console.log("선택된 퀘스트:", selectedQuestId);
       router.push("/(app)/(tabs)/(home)/questProgress");
     }
@@ -70,26 +67,26 @@ export default function QuestSelection() {
 
         {/* 퀘스트 옵션들 */}
         <View style={styles.questContainer}>
-          {questOptions.map((quest) => (
+          {data?.map((quest) => (
             <Pressable
-              key={quest.id}
+              key={quest.uuid}
               style={[
                 styles.questOption,
-                selectedQuestId === quest.id
+                selectedQuestId === quest.uuid
                   ? styles.selectedOption
                   : styles.unselectedOption,
               ]}
-              onPress={() => handleQuestSelect(quest.id)}
+              onPress={() => handleQuestSelect(quest.uuid)}
             >
               <Text
                 style={[
                   styles.questText,
-                  selectedQuestId === quest.id
+                  selectedQuestId === quest.uuid
                     ? styles.selectedText
                     : styles.unselectedText,
                 ]}
               >
-                {quest.text} {quest.emoji}
+                {quest.title}
               </Text>
             </Pressable>
           ))}
