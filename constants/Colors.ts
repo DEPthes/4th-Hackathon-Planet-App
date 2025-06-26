@@ -43,6 +43,9 @@ export default {
 };
 
 export {
+  FONT_MAIN,
+  FONT_SUB,
+  FONT_SUB2,
   MAIN_COLOR,
   MAIN_COLOR2,
   MAIN_COLOR_DARK,

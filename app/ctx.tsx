@@ -2,7 +2,7 @@ import { createContext, use, type PropsWithChildren } from "react";
 import { useStorageState } from "../hooks/useStorageState";
 
 const AuthContext = createContext<{
-  signIn: () => void;
+  signIn: (token?: string) => void;
   signOut: () => void;
   signUp: () => void;
   session?: string | null;
@@ -30,9 +30,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
   return (
     <AuthContext.Provider
       value={{
-        signIn: () => {
-          // 로그인 로직 구현
-          setSession("xxx");
+        signIn: (token?: string) => {
+          // 로그인 로직 구현 - 토큰을 받으면 해당 토큰 저장, 없으면 기본값
+          setSession(token || "xxx");
         },
         signOut: () => {
           setSession(null);

@@ -38,3 +38,6 @@ yarn-error.*
 
 # cursor
 .cursor/
+
+# env
+.env
