@@ -1,6 +1,6 @@
 // Planet API 클라이언트
 const API_BASE_URL =
-  process.env.EXPO_PUBLIC_API_BASE_URL || "https://planet.myunghyun.me/v3/api";
+  process.env.EXPO_PUBLIC_API_BASE_URL || "http://planet.myunghyun.me";
 
 console.log("API_BASE_URL:", API_BASE_URL); // 디버깅용
 
@@ -28,6 +28,30 @@ export interface SignUpRequest {
     | "ENTJ";
   gender: "Male" | "Female";
   hobbies: string[];
+}
+
+export interface UserUpdateRequest {
+  password?: string;
+  name?: string;
+  mbti?:
+    | "ISTJ"
+    | "ISFJ"
+    | "INFJ"
+    | "INTJ"
+    | "ISTP"
+    | "ISFP"
+    | "INFP"
+    | "INTP"
+    | "ESTP"
+    | "ESFP"
+    | "ENFP"
+    | "ENTP"
+    | "ESTJ"
+    | "ESFJ"
+    | "ENFJ"
+    | "ENTJ";
+  gender?: "Male" | "Female";
+  hobbies?: string[];
 }
 
 export interface UserResponse {
@@ -122,7 +146,7 @@ async function apiRequest<T>(
       stack: error instanceof Error ? error.stack : undefined,
     };
 
-    // console.error("💥 API 요청 실패:", errorInfo);
+    console.error("💥 API 요청 실패:", errorInfo);
 
     // 타임아웃 에러
     if (error instanceof Error && error.name === "AbortError") {
@@ -171,10 +195,26 @@ export async function signIn(data: SignInRequest): Promise<SignInResponse> {
 
 // 내 정보 조회 API
 export async function getMe(token: string): Promise<UserResponse> {
+  console.log(token);
   return apiRequest<UserResponse>("/auth/me", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
     },
+  });
+}
+
+// 내 정보 수정 API
+export async function updateUser(
+  email: string,
+  data: UserUpdateRequest,
+  token: string
+): Promise<UserResponse> {
+  return apiRequest<UserResponse>(`/users/${encodeURIComponent(email)}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
   });
 }

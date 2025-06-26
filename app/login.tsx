@@ -1,4 +1,5 @@
 import { signIn as apiSignIn } from "@/api/api";
+import { saveToken, saveUserInfo } from "@/lib/storage";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
@@ -41,6 +42,9 @@ export default function Login() {
       });
 
       // 토큰과 사용자 정보 저장
+      await saveToken(response.accessToken);
+      await saveUserInfo(response.user);
+
       signIn(response.accessToken);
 
       router.replace("/(app)/(tabs)");

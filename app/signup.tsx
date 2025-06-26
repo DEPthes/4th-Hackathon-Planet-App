@@ -3,13 +3,14 @@
  * 사용자의 기본 정보(이메일, 비밀번호)와 추가 정보(성별, MBTI, 취미)를 입력받아 회원가입을 처리합니다.
  */
 
-import { signUp, type SignUpRequest } from "@/api/api";
+import { signIn, signUp, type SignUpRequest } from "@/api/api";
 import UserAgeSelect from "@/components/signup/UserAgeSelect";
 import UserGenderSelect from "@/components/signup/UserGenderSelect";
 import UserHobbySelect from "@/components/signup/UserHobbySelect";
 import UserMbtiSelect from "@/components/signup/UserMbtiSelect";
 import { FONT_SUB, MAIN_COLOR2, SUB_COLOR } from "@/constants/Colors";
 import { FONT_STYLE } from "@/constants/Fonts";
+import { saveToken, saveUserInfo } from "@/lib/storage";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -24,6 +25,7 @@ import {
   TextStyle,
   View,
 } from "react-native";
+import { useSession } from "./ctx";
 
 // MBTI 기본값 설정
 const DEFAULT_MBTI = "ESTJ";
@@ -48,6 +50,8 @@ const Signup = () => {
   const [isEmailError, setIsEmailError] = useState(false);
   const [isPasswordError, setIsPasswordError] = useState(false);
   const [isPasswordCheckError, setIsPasswordCheckError] = useState(false);
+
+  const { signIn: sessionSignIn } = useSession();
 
   /**
    * 필수 입력 항목이 모두 입력되었는지 확인
@@ -77,14 +81,15 @@ const Signup = () => {
 
   /**
    * 회원가입 처리 함수
-   * Planet API를 통해 실제 회원가입을 진행합니다.
+   * Planet API를 통해 실제 회원가입을 진행한 후 자동 로그인합니다.
    *
    * 처리 과정:
    * 1. 입력값 검증 (필수 항목 확인)
    * 2. 비밀번호 일치 확인
    * 3. Planet API 회원가입 요청
-   * 4. 성공 시 로그인 페이지로 이동
-   * 5. 실패 시 에러 메시지 표시
+   * 4. 성공 시 자동 로그인
+   * 5. 토큰 저장 후 메인 화면으로 이동
+   * 6. 실패 시 에러 메시지 표시
    */
   const handleSignup = async () => {
     // 에러 상태 초기화
@@ -125,11 +130,22 @@ const Signup = () => {
       // 4. Planet API 회원가입 호출
       const userResponse = await signUp(signUpData);
 
-      // 5. 회원가입 성공 - 로그인 페이지로 이동
-      router.replace("/login");
+      // 5. 자동 로그인 진행
+      const loginResponse = await signIn({
+        email: email.trim(),
+        password: password.trim(),
+      });
+
+      // 6. 토큰과 사용자 정보 저장
+      await saveToken(loginResponse.accessToken);
+      await saveUserInfo(loginResponse.user);
+
+      // 7. 세션 설정 및 메인 화면으로 이동
+      sessionSignIn(loginResponse.accessToken);
+      router.replace("/(app)/(tabs)");
     } catch (error: any) {
-      // 6. 회원가입 실패 - 에러 메시지 표시
-      console.error("Planet API 회원가입 오류:", error);
+      // 회원가입 또는 로그인 실패 - 에러 메시지 표시
+      console.error("회원가입/로그인 오류:", error);
 
       let errorMessage = "회원가입 중 오류가 발생했습니다.";
 
