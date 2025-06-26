@@ -4,11 +4,13 @@ import { useStorageState } from "../hooks/useStorageState";
 const AuthContext = createContext<{
   signIn: () => void;
   signOut: () => void;
+  signUp: () => void;
   session?: string | null;
   isLoading: boolean;
 }>({
   signIn: () => null,
   signOut: () => null,
+  signUp: () => null,
   session: null,
   isLoading: false,
 });
@@ -34,6 +36,10 @@ export function SessionProvider({ children }: PropsWithChildren) {
         },
         signOut: () => {
           setSession(null);
+        },
+        signUp: () => {
+          // 회원가입 로직 구현
+          setSession("xxx");
         },
         session,
         isLoading,

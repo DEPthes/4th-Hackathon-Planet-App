@@ -1,9 +1,4 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
@@ -26,8 +21,10 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    Pretendard: require("../assets/fonts/PretendardVariable.ttf"),
-    ...FontAwesome.font,
+    PretendardRegular: require("../assets/fonts/Pretendard-Regular.otf"),
+    PretendardSemiBold: require("../assets/fonts/Pretendard-SemiBold.otf"),
+    PretendardBold: require("../assets/fonts/Pretendard-Bold.otf"),
+    // Pretendard: require("../assets/fonts/PretendardVariable.ttf"), // Variable 폰트는 주석 처리
   });
   const [appIsReady, setAppIsReady] = useState(false);
 
@@ -67,13 +64,21 @@ function RootNavigator() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={DefaultTheme}>
       <Stack>
         <Stack.Protected guard={!!session}>
           <Stack.Screen name="(app)/(tabs)" options={{ headerShown: false }} />
         </Stack.Protected>
         <Stack.Protected guard={!session}>
           <Stack.Screen name="login" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="signup"
+            options={{
+              title: "회원가입",
+              headerShadowVisible: false,
+              headerTransparent: true,
+            }}
+          />
         </Stack.Protected>
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
       </Stack>
