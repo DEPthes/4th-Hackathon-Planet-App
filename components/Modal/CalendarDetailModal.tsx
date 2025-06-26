@@ -115,11 +115,6 @@ const CalendarDetailModal: React.FC<CalendarDetailModalProps> = ({
                 <Text style={styles.dateTitle}>
                   {selectedDate ? formatDate(selectedDate) : "날짜 선택"}
                 </Text>
-                {questData && (
-                  <Text style={styles.experienceText}>
-                    경험치 +{questData.experience || 10}
-                  </Text>
-                )}
               </View>
               <Text style={styles.dateStatus}>
                 {selectedDate ? formatDateStatus(selectedDate) : ""}
