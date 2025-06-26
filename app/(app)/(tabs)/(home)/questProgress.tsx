@@ -1,3 +1,5 @@
+import { completeQuest } from "@/api/api";
+import { getToken } from "@/lib/storage";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -63,8 +65,15 @@ export default function QuestProgressScreen() {
     router.push("/(app)/(tabs)/(home)/questProgressNew");
   };
 
-  const handleCompleteWithoutPhoto = () => {
-    completeMutation.mutate({ questId: todayQuest?.id || 0 });
+  const handleCompleteWithoutPhoto = async () => {
+    // completeMutation.mutate({ questId: todayQuest?.id || 0 });
+    const token = await getToken();
+    if (!token) {
+      return;
+    }
+    const result = await completeQuest(token, todayQuest?.id || 0);
+    console.log("result", result);
+    router.push("/(app)/(tabs)/(home)/questComplete");
   };
 
   return (

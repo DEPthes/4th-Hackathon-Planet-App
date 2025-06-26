@@ -165,7 +165,7 @@ export default function HomeScreen() {
             colors={["#ECEDFE", "#9B9FEE"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={[styles.progressBarFill, { width: `${progress}%` }]}
+            style={[styles.progressBarFill, { width: `${progress % 100}%` }]}
           />
         </View>
 
@@ -175,7 +175,7 @@ export default function HomeScreen() {
         </View>
 
         {/* 별 아이콘 - 상태바 끝에 위치 */}
-        <View style={[styles.starContainer, { left: `${progress}%` }]}>
+        <View style={[styles.starContainer, { left: `${progress % 100}%` }]}>
           <Image source={require("@/assets/images/tier/Star.png")} />
           <Text style={styles.experiencePoint}>
             {tierData?.experiencePoint}

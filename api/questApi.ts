@@ -188,11 +188,17 @@ async function completeQuest(
     }
   }
 
-  return questApiRequest<QuestResponse>(`/quest/${questId}/complete`, {
-    method: "PUT",
-    body: formData,
-    isMultipart: true,
-  });
+  return questApiRequest<QuestResponse>(
+    `/quest/${questId}/complete/with-image`,
+    {
+      method: "PUT",
+      body: formData,
+      isMultipart: true,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
 }
 
 async function getMyQuestsBetween(

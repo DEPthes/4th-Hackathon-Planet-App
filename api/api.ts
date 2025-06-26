@@ -1,4 +1,4 @@
-import { QuestSuggestionResponse } from "./questApi";
+import { QuestResponse, QuestSuggestionResponse } from "./questApi";
 
 // Planet API 클라이언트
 const API_BASE_URL =
@@ -294,6 +294,19 @@ export async function getImage(
 ): Promise<ImageResponse> {
   return apiRequest<ImageResponse>(`/files/image/base64/${imageId}`, {
     method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+// 이미지 없이 퀘스트 완료
+export async function completeQuest(
+  token: string,
+  questId: number
+): Promise<QuestResponse> {
+  return apiRequest<QuestResponse>(`/quest/${questId}/complete/without-image`, {
+    method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`,
     },
