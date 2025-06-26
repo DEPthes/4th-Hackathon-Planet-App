@@ -5,7 +5,6 @@ import {
   Alert,
   Pressable,
   SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -57,7 +56,7 @@ export default function HomeScreen() {
       if (todayQuest.isCompleted) {
         Alert.alert("완료된 퀘스트", "이미 완료된 퀘스트입니다.");
       } else {
-        router.push("/(app)/(tabs)/(home)/questProgressNew");
+        router.push("/(app)/(tabs)/(home)/questProgress");
       }
     }
   };
@@ -137,23 +136,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-
-      {/* 퀘스트 제목 */}
-      <View style={styles.questTitleContainer}>
-        <Text style={styles.questTitle}>오늘의 행성 퀘스트</Text>
-      </View>
-
-      {/* 현재 퀘스트 정보 */}
-      {todayQuest && (
-        <View style={styles.currentQuestContainer}>
-          <Text style={styles.currentQuestTitle}>{todayQuest.title}</Text>
-          <Text style={styles.currentQuestStatus}>
-            {todayQuest.isCompleted ? "완료됨" : "진행 중"}
-          </Text>
-        </View>
-      )}
-
+      {/* <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" /> */}
       {/* 진행률 바 */}
       <View style={styles.progressContainer}>
         <View style={styles.progressBarBackground}>
@@ -280,6 +263,7 @@ const styles = StyleSheet.create({
     color: "#9B9FEE",
   },
   progressContainer: {
+    marginTop: 60,
     height: 46,
     marginHorizontal: 24,
     position: "relative",

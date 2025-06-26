@@ -11,73 +11,55 @@ import {
   Text,
   View,
 } from "react-native";
+import { useCompleteQuest, useTodayQuest } from "../../../../api/questApi";
 
-interface QuestData {
-  title: string;
-  description: string;
-  emoji: string;
-}
-
-export default function QuestProgress() {
+export default function QuestProgressScreen() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string>("");
 
-  // 예시 퀘스트 데이터 (실제로는 route params나 state에서 받아올 것)
-  const questData: QuestData = {
-    title: "책 읽고, 마음에 드는 문장 고르기",
-    description: "괜찮은 문장이 있었나요? 천천히, 조용히 찾아보세요.",
-    emoji: "✍️",
-  };
+  // TanStack Query hooks
+  const {
+    data: todayQuest,
+    isLoading: isTodayQuestLoading,
+    error: todayQuestError,
+  } = useTodayQuest();
 
-  const handleImageUpload = async () => {
-    try {
-      // 권한 요청
-      const permissionResult =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
+  console.log("todayQuest", todayQuest);
 
-      if (permissionResult.granted === false) {
-        Alert.alert(
-          "권한 필요",
-          "사진을 업로드하려면 갤러리 접근 권한이 필요합니다."
-        );
-        return;
-      }
+  const completeMutation = useCompleteQuest();
 
-      // 이미지 선택
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
+  const pickImage = async () => {
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      Alert.alert(
+        "권한 필요",
+        "사진 라이브러리에 접근하려면 권한이 필요합니다."
+      );
+      return;
+    }
 
-      if (!result.canceled) {
-        setSelectedImage(result.assets[0].uri);
-        // 퀘스트 완료 화면으로 이동
-        handleQuestComplete(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.error("이미지 업로드 오류:", error);
-      Alert.alert("오류", "이미지 업로드 중 오류가 발생했습니다.");
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      const asset = result.assets[0];
+      setSelectedImage(asset.uri);
+      setFileName(asset.fileName || "선택된 이미지");
     }
   };
 
-  const handleCompleteWithoutPhoto = () => {
-    Alert.alert("퀘스트 완료", "사진 없이 퀘스트를 완료하시겠습니까?", [
-      { text: "취소", style: "cancel" },
-      { text: "완료", onPress: () => handleQuestComplete(null) },
-    ]);
+  const handleImageUpload = () => {
+    // pickImage();
+    router.push("/(app)/(tabs)/(home)/questProgressNew");
   };
 
-  const handleQuestComplete = (imageUri: string | null) => {
-    // 퀘스트 완료 처리 로직
-    console.log("퀘스트 완료:", { questData, imageUri });
-
-    // TODO: API 호출하여 퀘스트 완료 처리
-    // TODO: 퀘스트 완료 화면으로 이동 또는 홈으로 돌아가기
-
-    Alert.alert("축하합니다!", "퀘스트를 완료했습니다! 🎉", [
-      { text: "확인", onPress: () => router.replace("/(app)/(tabs)/(home)") },
-    ]);
+  const handleCompleteWithoutPhoto = () => {
+    completeMutation.mutate({ questId: todayQuest?.id || 0 });
   };
 
   return (
@@ -93,11 +75,12 @@ export default function QuestProgress() {
           <View style={styles.questInfoBox}>
             <Text style={styles.questInfoTitle}>오늘의 행성 퀘스트</Text>
             <Text style={styles.questInfoDescription}>
-              : {questData.title}
-              {questData.emoji}
+              : {todayQuest?.title}
             </Text>
           </View>
-          <Text style={styles.encouragementText}>{questData.description}</Text>
+          <Text style={styles.encouragementText}>
+            {todayQuest?.encouragement}
+          </Text>
         </View>
 
         {/* 중앙 일러스트 영역 */}

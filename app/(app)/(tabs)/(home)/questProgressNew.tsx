@@ -1,12 +1,11 @@
+import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  ActivityIndicator,
   Alert,
   Pressable,
   SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -23,8 +22,6 @@ export default function QuestProgressNewScreen() {
     isLoading: isTodayQuestLoading,
     error: todayQuestError,
   } = useTodayQuest();
-
-  console.log("todayQuest", todayQuest);
 
   const completeMutation = useCompleteQuest();
 
@@ -83,102 +80,42 @@ export default function QuestProgressNewScreen() {
     }
   };
 
-  if (isTodayQuestLoading) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#9B9FEE" />
-          <Text style={styles.loadingText}>퀘스트를 불러오는 중...</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  if (todayQuestError || !todayQuest) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>퀘스트를 불러오지 못했습니다.</Text>
-          <Pressable style={styles.backButton} onPress={() => router.back()}>
-            <Text style={styles.backButtonText}>홈으로 돌아가기</Text>
-          </Pressable>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  if (todayQuest.isCompleted) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-        <View style={styles.completedContainer}>
-          <Text style={styles.completedTitle}>✅ 퀘스트 완료!</Text>
-          <Text style={styles.completedText}>이미 완료된 퀘스트입니다.</Text>
-          <Pressable style={styles.backButton} onPress={() => router.back()}>
-            <Text style={styles.backButtonText}>홈으로 돌아가기</Text>
-          </Pressable>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-
       {/* 헤더 */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>퀘스트 진행중..</Text>
       </View>
 
-      {/* 퀘스트 정보 박스 */}
-      <View style={styles.questInfoContainer}>
-        <View style={styles.questInfoBox}>
-          <Text style={styles.questTitle}>{todayQuest.title}</Text>
-          {todayQuest.encouragement && (
-            <Text style={styles.questDescription}>
-              {todayQuest.encouragement}
+      {/* 컨텐츠 영역 */}
+      <View style={styles.content}>
+        {/* 퀘스트 정보 박스 */}
+        <View style={styles.questInfoContainer}>
+          <View style={styles.questInfoBox}>
+            <Text style={styles.questInfoTitle}>오늘의 행성 퀘스트</Text>
+            <Text style={styles.questInfoDescription}>
+              : 책 읽고, 마음에 드는 문장 고르기✍️
             </Text>
-          )}
-        </View>
-      </View>
-
-      {/* 설명 텍스트 */}
-      <View style={styles.instructionContainer}>
-        <Text style={styles.instructionText}>
-          퀘스트를 완수하고 사진을 업로드해주세요!
-        </Text>
-      </View>
-
-      {/* 사진 업로드 영역 */}
-      <View style={styles.uploadContainer}>
-        <View style={styles.uploadBox}>
-          {selectedImage ? (
-            <View style={styles.selectedFileContainer}>
-              <Text style={styles.selectedFileIcon}>📁</Text>
-              <Text style={styles.selectedFileName}>{fileName}</Text>
-            </View>
-          ) : (
-            <>
-              <Text style={styles.uploadIcon}>📷</Text>
-              <Text style={styles.uploadText}>
-                사진을 업로드하려면{"\n"}아래 버튼을 눌러주세요
-              </Text>
-            </>
-          )}
-        </View>
-
-        <Pressable style={styles.uploadButton} onPress={pickImage}>
-          <Text style={styles.uploadButtonText}>
-            {selectedImage ? "다른 사진 선택" : "사진 업로드"}
+          </View>
+          <Text style={styles.encouragementText}>
+            괜찮은 문장이 있었나요? 천천히, 조용히 찾아보세요.
           </Text>
-        </Pressable>
-      </View>
+        </View>
 
-      {/* 완료 버튼 */}
-      <View style={styles.completeButtonContainer}>
+        {/* 사진 업로드 영역 */}
+        <View style={styles.uploadSection}>
+          <Pressable style={styles.uploadBox} onPress={pickImage}>
+            <Text style={styles.uploadText}>사진</Text>
+          </Pressable>
+
+          {/* 파일명 표시 */}
+          <View style={styles.fileNameContainer}>
+            <Feather name="paperclip" size={12} color="#929498" />
+            <Text style={styles.fileName}>{fileName || "이미지 파일명"}</Text>
+          </View>
+        </View>
+
+        {/* 완료 버튼 */}
         <Pressable
           style={[
             styles.completeButton,
@@ -188,13 +125,10 @@ export default function QuestProgressNewScreen() {
           disabled={completeMutation.isPending}
         >
           <Text style={styles.completeButtonText}>
-            {completeMutation.isPending ? "완료 처리 중..." : "완료하기"}
+            {completeMutation.isPending ? "완료 처리 중..." : "퀘스트 완료"}
           </Text>
         </Pressable>
       </View>
-
-      {/* 하단 네비게이션 영역 */}
-      <View style={styles.bottomNavArea} />
     </SafeAreaView>
   );
 }
@@ -204,182 +138,120 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFFFF",
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    fontFamily: "PretendardRegular",
-    color: "#6B6B6B",
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 24,
-  },
-  errorText: {
-    fontSize: 16,
-    fontFamily: "PretendardRegular",
-    color: "#FF6B6B",
-    marginBottom: 24,
-    textAlign: "center",
-  },
-  completedContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 24,
-  },
-  completedTitle: {
-    fontSize: 20,
-    fontFamily: "PretendardBold",
-    color: "#9B9FEE",
-    marginBottom: 12,
-  },
-  completedText: {
-    fontSize: 16,
-    fontFamily: "PretendardRegular",
-    color: "#6B6B6B",
-    marginBottom: 24,
-    textAlign: "center",
-  },
-  backButton: {
-    backgroundColor: "#9B9FEE",
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-  },
-  backButtonText: {
-    fontSize: 14,
-    fontFamily: "PretendardSemiBold",
-    color: "#FFFFFF",
-  },
   header: {
-    height: 60,
+    height: 52,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    marginTop: 44,
+    marginTop: 47, // Status bar height
   },
   headerTitle: {
-    fontSize: 16,
+    fontSize: 20,
     fontFamily: "PretendardBold",
     fontWeight: "700",
-    color: "#3A3A3A",
+    color: "#000000",
+    textAlign: "center",
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 40, // 24px 기본 + 16px 추가
+    paddingTop: 27, // 헤더와의 간격
   },
   questInfoContainer: {
-    paddingHorizontal: 24,
-    marginTop: 24,
-    marginBottom: 32,
+    marginBottom: 27,
   },
   questInfoBox: {
-    backgroundColor: "#F8F9FA",
-    borderRadius: 12,
-    padding: 20,
-    borderLeftWidth: 4,
-    borderLeftColor: "#9B9FEE",
+    backgroundColor: "#ECEDFE",
+    borderRadius: 10,
+    paddingVertical: 16,
+    paddingHorizontal: 35,
+    marginBottom: 16,
   },
-  questTitle: {
-    fontSize: 18,
+  questInfoTitle: {
+    fontSize: 16,
     fontFamily: "PretendardBold",
     fontWeight: "700",
-    color: "#3A3A3A",
-    marginBottom: 8,
+    color: "#000000",
+    marginBottom: 10,
   },
-  questDescription: {
+  questInfoDescription: {
     fontSize: 14,
-    fontFamily: "PretendardRegular",
-    color: "#6B6B6B",
-    lineHeight: 20,
-  },
-  instructionContainer: {
-    paddingHorizontal: 24,
-    marginBottom: 32,
-  },
-  instructionText: {
-    fontSize: 16,
-    fontFamily: "PretendardRegular",
-    color: "#3A3A3A",
-    textAlign: "center",
-    lineHeight: 24,
-  },
-  uploadContainer: {
-    flex: 1,
-    paddingHorizontal: 24,
-    justifyContent: "center",
-    marginBottom: 40,
-  },
-  uploadBox: {
-    height: 200,
-    backgroundColor: "#F8F9FA",
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: "#E4E4E4",
-    borderStyle: "dashed",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  uploadIcon: {
-    fontSize: 48,
-    marginBottom: 16,
-  },
-  uploadText: {
-    fontSize: 14,
-    fontFamily: "PretendardRegular",
-    color: "#6B6B6B",
-    textAlign: "center",
-    lineHeight: 20,
-  },
-  selectedFileContainer: {
-    alignItems: "center",
-  },
-  selectedFileIcon: {
-    fontSize: 48,
-    marginBottom: 16,
-  },
-  selectedFileName: {
-    fontSize: 14,
-    fontFamily: "PretendardSemiBold",
-    color: "#3A3A3A",
-    textAlign: "center",
-  },
-  uploadButton: {
-    backgroundColor: "#ECEDFE",
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    alignItems: "center",
-  },
-  uploadButtonText: {
-    fontSize: 16,
-    fontFamily: "PretendardSemiBold",
-    fontWeight: "600",
+    fontFamily: "PretendardBold",
+    fontWeight: "700",
     color: "#9B9FEE",
   },
-  completeButtonContainer: {
-    paddingHorizontal: 24,
-    marginBottom: 32,
+  encouragementText: {
+    fontSize: 14,
+    fontFamily: "PretendardRegular",
+    fontWeight: "400",
+    color: "#3A3A3A",
+    textAlign: "center",
+  },
+  uploadSection: {
+    marginBottom: 27,
+  },
+  uploadBox: {
+    width: 310,
+    height: 310,
+    backgroundColor: "#E4E4E4",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 8,
+    alignSelf: "center",
+  },
+  uploadText: {
+    fontSize: 13,
+    fontFamily: "Inter",
+    fontWeight: "600",
+    color: "#3A3A3A",
+    letterSpacing: -0.325,
+  },
+  fileNameContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: 40, // 왼쪽 정렬
+    gap: 6,
+  },
+  fileName: {
+    fontSize: 12,
+    fontFamily: "PretendardRegular",
+    fontWeight: "400",
+    color: "#929498",
   },
   completeButton: {
     backgroundColor: "#9B9FEE",
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
+    borderRadius: 100,
+    paddingVertical: 20,
+    marginHorizontal: 16,
     alignItems: "center",
+    marginTop: "auto",
+    marginBottom: 27,
   },
   completeButtonText: {
     fontSize: 16,
-    fontFamily: "PretendardBold",
-    fontWeight: "700",
+    fontFamily: "PretendardSemiBold",
+    fontWeight: "600",
     color: "#FFFFFF",
   },
-  bottomNavArea: {
-    height: 80,
+  bottomNav: {
+    height: 88,
     backgroundColor: "#FFFFFF",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    paddingTop: 8,
+    paddingBottom: 34, // Safe area bottom
+  },
+  navItem: {
+    alignItems: "center",
+    width: 40,
+  },
+  navText: {
+    fontSize: 12,
+    fontFamily: "PretendardRegular",
+    fontWeight: "400",
+    color: "#000000",
+    marginTop: 4,
+    textAlign: "center",
   },
 });

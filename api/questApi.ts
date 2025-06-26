@@ -177,9 +177,12 @@ async function completeQuest(
 
   if (evidenceImage) {
     try {
-      const response = await fetch(evidenceImage);
-      const imageBlob = await response.blob();
-      formData.append("evidenceImage", imageBlob, "evidence.jpg");
+      // React Native에서 이미지 URI를 FormData에 추가
+      formData.append("evidenceImage", {
+        uri: evidenceImage,
+        type: "image/jpeg",
+        name: "evidence.jpg",
+      } as any);
     } catch (error) {
       throw new QuestApiError(400, "이미지 처리에 실패했습니다.");
     }
