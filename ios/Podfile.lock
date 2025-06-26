@@ -69,8 +69,6 @@ PODS:
     - Yoga
   - ExpoSecureStore (14.2.3):
     - ExpoModulesCore
-  - ExpoSplashScreen (0.30.9):
-    - ExpoModulesCore
   - ExpoSystemUI (5.0.9):
     - ExpoModulesCore
   - ExpoWebBrowser (14.2.0):
@@ -2018,7 +2016,6 @@ DEPENDENCIES:
   - ExpoLinking (from `../node_modules/expo-linking/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoSecureStore (from `../node_modules/expo-secure-store/ios`)
-  - ExpoSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - ExpoSystemUI (from `../node_modules/expo-system-ui/ios`)
   - ExpoWebBrowser (from `../node_modules/expo-web-browser/ios`)
   - fast_float (from `../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
@@ -2125,8 +2122,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-modules-core"
   ExpoSecureStore:
     :path: "../node_modules/expo-secure-store/ios"
-  ExpoSplashScreen:
-    :path: "../node_modules/expo-splash-screen/ios"
   ExpoSystemUI:
     :path: "../node_modules/expo-system-ui/ios"
   ExpoWebBrowser:
@@ -2290,7 +2285,6 @@ SPEC CHECKSUMS:
   ExpoLinking: 5d151d4a497d7e375308602f0a89b4e8acf7b5f8
   ExpoModulesCore: e2e363bcdee87b46f858586d1887ebb215582001
   ExpoSecureStore: 3148869ad24ab94f9e0c5777c7941d7a37d60399
-  ExpoSplashScreen: 37e2fd371d4b93215f86a81d8cad3e7b69287e42
   ExpoSystemUI: 5dce97654754330ba6e2c39e7242c5d71c8d9952
   ExpoWebBrowser: eeb47f52e85b2686b56178749675cf90d0822f86
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6

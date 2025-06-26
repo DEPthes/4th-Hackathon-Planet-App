@@ -1,5 +1,4 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   DarkTheme,
   DefaultTheme,
@@ -7,8 +6,8 @@ import {
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
 import { useCallback, useEffect, useState } from "react";
+import { View } from "react-native";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/components/useColorScheme";
@@ -31,14 +30,9 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
   const [appIsReady, setAppIsReady] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
   useEffect(() => {
-    SplashScreen.preventAutoHideAsync();
-    // 로그인 상태 확인
-    AsyncStorage.getItem("isLoggedIn").then((v) => {
-      setIsLoggedIn(v === "true");
-    });
+    // SplashScreen.preventAutoHideAsync(); // 제거
   }, []);
 
   useEffect(() => {
@@ -51,20 +45,19 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-  const onLayoutRootView = useCallback(() => {
-    if (appIsReady) {
-      SplashScreen.hideAsync();
-    }
-  }, [appIsReady]);
+  // onLayoutRootView에서 SplashScreen.hideAsync() 호출 제거
+  const onLayoutRootView = useCallback(() => {}, []);
 
-  if (!appIsReady || isLoggedIn === null) {
+  if (!appIsReady) {
     return null;
   }
 
   return (
     <SessionProvider>
       <SplashScreenController />
-      <RootNavigator />
+      <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+        <RootNavigator />
+      </View>
     </SessionProvider>
   );
 }
