@@ -1,3 +1,6 @@
+import { getImage } from "@/api/api";
+import { getToken } from "@/lib/storage";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import {
   Dimensions,
@@ -33,6 +36,32 @@ const CalendarDetailModal: React.FC<CalendarDetailModalProps> = ({
   selectedDate,
   questData,
 }) => {
+  const {
+    data: image,
+    isLoading: imageLoading,
+    error: imageError,
+  } = useQuery({
+    queryKey: ["image", questData?.evidenceImage?.id],
+    queryFn: async () => {
+      const token = await getToken();
+      if (!token) {
+        return null;
+      }
+      if (!questData?.evidenceImage?.id) {
+        return null;
+      }
+      return getImage(token, questData.evidenceImage.id);
+    },
+    enabled: !!questData?.evidenceImage?.id, // 이미지 ID가 있을 때만 실행
+  });
+
+  console.log("image", {
+    image,
+    imageLoading,
+    imageError,
+    questData,
+  });
+
   const formatDate = (date: Date) => {
     const month = date.getMonth() + 1;
     const day = date.getDate();
@@ -124,11 +153,32 @@ const CalendarDetailModal: React.FC<CalendarDetailModalProps> = ({
                 </View>
                 <View style={styles.evidenceImageContainer}>
                   {questData.evidenceImage ? (
-                    <Image
-                      source={{ uri: questData.evidenceImage.id }}
-                      style={styles.evidenceImage}
-                      resizeMode="cover"
-                    />
+                    <>
+                      {imageLoading ? (
+                        <View style={styles.loadingImageContainer}>
+                          <Text style={styles.loadingImageText}>
+                            이미지 로딩 중...
+                          </Text>
+                        </View>
+                      ) : imageError ? (
+                        <View style={styles.errorImageContainer}>
+                          <Text style={styles.errorImageText}>
+                            이미지를 불러올 수 없습니다
+                          </Text>
+                        </View>
+                      ) : image ? (
+                        <Image
+                          source={{ uri: image.base64Data }}
+                          style={styles.evidenceImage}
+                          resizeMode="cover"
+                          onError={(error) => {
+                            console.error("이미지 렌더링 에러:", error);
+                          }}
+                        />
+                      ) : (
+                        <View style={styles.placeholderImage} />
+                      )}
+                    </>
                   ) : (
                     <View style={styles.placeholderImage} />
                   )}
@@ -250,6 +300,32 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "400",
     color: "#929498",
+    fontFamily: "Pretendard",
+  },
+  loadingImageContainer: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#f5f5f5",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingImageText: {
+    fontSize: 14,
+    fontWeight: "400",
+    color: "#929498",
+    fontFamily: "Pretendard",
+  },
+  errorImageContainer: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#f5f5f5",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorImageText: {
+    fontSize: 14,
+    fontWeight: "400",
+    color: "#ea3a3a",
     fontFamily: "Pretendard",
   },
 });

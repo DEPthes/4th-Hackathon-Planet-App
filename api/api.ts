@@ -278,3 +278,24 @@ export async function getQuestSuggestionsByDate(
     }
   );
 }
+
+interface ImageResponse {
+  id: string;
+  fileName: string;
+  size: number;
+  base64Data: string;
+  mimeType: string;
+}
+
+// 이미지 조회
+export async function getImage(
+  token: string,
+  imageId: string
+): Promise<ImageResponse> {
+  return apiRequest<ImageResponse>(`/files/image/base64/${imageId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
