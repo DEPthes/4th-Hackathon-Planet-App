@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
+  Image,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -100,7 +101,15 @@ export default function QuestProgressNewScreen() {
         {/* 사진 업로드 영역 */}
         <View style={styles.uploadSection}>
           <Pressable style={styles.uploadBox} onPress={pickImage}>
-            <Text style={styles.uploadText}>사진</Text>
+            {selectedImage ? (
+              <Image
+                source={{ uri: selectedImage }}
+                style={styles.uploadedImage}
+                resizeMode="cover"
+              />
+            ) : (
+              <Text style={styles.uploadText}>사진</Text>
+            )}
           </Pressable>
 
           {/* 파일명 표시 */}
@@ -193,6 +202,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
     alignSelf: "center",
+    overflow: "hidden", // 이미지가 박스 모서리를 넘지 않도록
+  },
+  uploadedImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 10,
   },
   uploadText: {
     fontSize: 13,

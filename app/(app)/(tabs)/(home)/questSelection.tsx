@@ -22,10 +22,12 @@ interface QuestOption {
 
 export default function QuestSelection() {
   const [selectedQuestId, setSelectedQuestId] = useState<string | null>(null); // 기본값으로 2번 선택
+  const [isLoading, setIsLoading] = useState(false);
 
   const { data } = useQuery({
     queryKey: QUERY_KEYS.QUEST_SUGGESTIONS,
     queryFn: async () => {
+      setIsLoading(true);
       const token = await getToken();
       if (!token) {
         return;
@@ -35,6 +37,8 @@ export default function QuestSelection() {
   });
 
   const handleQuestSelect = (questId: string) => {
+    console.log("test");
+    console.log(questId);
     setSelectedQuestId(questId);
   };
 

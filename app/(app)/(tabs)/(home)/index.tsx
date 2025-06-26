@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Alert,
   Image,
@@ -24,7 +24,6 @@ import { useSession } from "../../../ctx";
 
 export default function HomeScreen() {
   const { session } = useSession();
-  const [progress, setProgress] = useState(82); // 진행률 예시 (0-100)
 
   // TanStack Query hooks
   const {
@@ -34,6 +33,18 @@ export default function HomeScreen() {
   } = useTodayQuest();
 
   const generateMutation = useGenerateQuestSuggestions();
+
+  // 티어 데이터 가져오기
+  const { data: tierData, refetch } = useCurrentMonthTier();
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  // 경험치 포인트를 100으로 나누어 진행률 계산
+  const progress = tierData?.experiencePoint
+    ? (tierData.experiencePoint / 100) * 100
+    : 0;
 
   useEffect(() => {
     // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
@@ -119,7 +130,6 @@ export default function HomeScreen() {
       }
     }
 
-    console.log(tierData?.experiencePoint);
     // 오늘의 퀘스트가 없는 경우
     return (
       <Pressable
@@ -141,10 +151,6 @@ export default function HomeScreen() {
       </Pressable>
     );
   };
-
-  // 티어 데이터 가져오기
-
-  const { data: tierData } = useCurrentMonthTier();
 
   const tier = tierData?.tier || "TinyStar";
 
@@ -168,8 +174,8 @@ export default function HomeScreen() {
           <Image source={getTierStarImage(getTierNumber(tier))} />
         </View>
 
-        {/* 별 아이콘 */}
-        <View style={styles.starContainer}>
+        {/* 별 아이콘 - 상태바 끝에 위치 */}
+        <View style={[styles.starContainer, { left: `${progress}%` }]}>
           <Image source={require("@/assets/images/tier/Star.png")} />
           <Text style={styles.experiencePoint}>
             {tierData?.experiencePoint}
@@ -282,10 +288,10 @@ const styles = StyleSheet.create({
   },
   starContainer: {
     position: "absolute",
-    right: 30,
     top: 0,
     width: 30,
     height: 30,
+    marginLeft: -15,
   },
   star: {
     width: 30,

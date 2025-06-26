@@ -1,7 +1,7 @@
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   Image,
@@ -22,7 +22,12 @@ export default function QuestProgressScreen() {
     data: todayQuest,
     isLoading: isTodayQuestLoading,
     error: todayQuestError,
+    refetch: refetchTodayQuest,
   } = useTodayQuest();
+
+  useEffect(() => {
+    refetchTodayQuest();
+  }, []);
 
   console.log("todayQuest", todayQuest);
 
